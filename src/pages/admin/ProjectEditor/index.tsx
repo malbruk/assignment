@@ -21,6 +21,24 @@ function ProjectDetailsTab({
 }: {
   project: (typeof projects)[number];
 }) {
+  const [details, setDetails] = useState({
+    name: project.name,
+    course: project.course,
+    description: project.description,
+    dueDate: project.dueDate,
+    status: project.status,
+  });
+  const [message, setMessage] = useState('');
+
+  const updateField = (key: keyof typeof details, value: string) => {
+    setDetails((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const handleSave = () => {
+    setMessage(`פרטי הפרויקט עודכנו (${details.name}) — דמו לשמירה.`);
+    setTimeout(() => setMessage(''), 3000);
+  };
+
   return (
     <Card className="space-y-4">
       <div className="flex items-center justify-between">
@@ -28,13 +46,15 @@ function ProjectDetailsTab({
           <CardTitle>פרטי פרויקט</CardTitle>
           <CardDescription>שם, קורס, תיאור ודדליין להגשה.</CardDescription>
         </div>
-        <Button>שמירת פרטים</Button>
+        <Button onClick={handleSave}>שמירת פרטים</Button>
       </div>
+      {message && <div className="text-sm text-emerald-700">{message}</div>}
       <div className="grid gap-4 md:grid-cols-2">
         <label className="space-y-1 text-sm text-slate-700">
           שם פרויקט
           <input
-            defaultValue={project.name}
+            value={details.name}
+            onChange={(e) => updateField('name', e.target.value)}
             className="w-full rounded-lg border border-slate-200 px-3 py-2"
             placeholder="שם ברור לסטודנטים"
           />
@@ -42,7 +62,8 @@ function ProjectDetailsTab({
         <label className="space-y-1 text-sm text-slate-700">
           קורס
           <input
-            defaultValue={project.course}
+            value={details.course}
+            onChange={(e) => updateField('course', e.target.value)}
             className="w-full rounded-lg border border-slate-200 px-3 py-2"
             placeholder="למידת מכונה"
           />
@@ -50,18 +71,28 @@ function ProjectDetailsTab({
         <label className="space-y-1 text-sm text-slate-700 md:col-span-2">
           תיאור
           <textarea
-            defaultValue={project.description}
+            value={details.description}
+            onChange={(e) => updateField('description', e.target.value)}
             className="w-full rounded-lg border border-slate-200 px-3 py-2"
             rows={3}
           />
         </label>
         <label className="space-y-1 text-sm text-slate-700">
           דדליין
-          <input defaultValue={project.dueDate} type="date" className="w-full rounded-lg border border-slate-200 px-3 py-2" />
+          <input
+            value={details.dueDate}
+            onChange={(e) => updateField('dueDate', e.target.value)}
+            type="date"
+            className="w-full rounded-lg border border-slate-200 px-3 py-2"
+          />
         </label>
         <label className="space-y-1 text-sm text-slate-700">
           סטטוס
-          <select defaultValue={project.status} className="w-full rounded-lg border border-slate-200 px-3 py-2">
+          <select
+            value={details.status}
+            onChange={(e) => updateField('status', e.target.value)}
+            className="w-full rounded-lg border border-slate-200 px-3 py-2"
+          >
             <option value="open">פתוח</option>
             <option value="submitted">הוגשו</option>
             <option value="graded">בדוק</option>
